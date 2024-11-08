@@ -1,16 +1,25 @@
 import "cheerio";
 import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/cheerio";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { AzureOpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { OpenAIEmbeddings, ChatOpenAI } from "@langchain/openai";
-import { pull } from "langchain/hub";
+import { AzureOpenAI } from "@langchain/openai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { StringOutputParser } from "@langchain/core/output_parsers";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-
-const OPENAI_API_KEY = "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";
-
+// const OPENAI_API_KEY = "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";
+const OPENAI_API_KEY = "6ea9703016b54b9686e3a744defdd5c3"
+const OPENAI_DEPLOYMENT_VERSION = "2023-07-01-preview"
+const OPENAI_DEPLOYMENT_ENDPOINT = "https://interstisopenaiformation.openai.azure.com/"
+const OPENAI_DEPLOYMENT_NAME = "alta-bot"
+const azureEmbedding = new AzureOpenAIEmbeddings({
+  azureOpenAIApiKey: OPENAI_API_KEY,
+  azureOpenAIApiInstanceName: OPENAI_DEPLOYMENT_ENDPOINT,
+  azureOpenAIApiEmbeddingsDeploymentName: OPENAI_DEPLOYMENT_NAME,
+  azureOpenAIApiVersion: OPENAI_DEPLOYMENT_VERSION,
+  maxRetries: 1,
+})
 const urls = [
   "https://alta-voce.tech/alta-vibe-pro",
   "https://alta-voce.tech/",
@@ -51,19 +60,25 @@ const main = async () => {
   const docs = await loadPages();
   const splits = await splitText(docs);
 
-  const vectorStore = await MemoryVectorStore.fromDocuments(
-    splits,
-    new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY })
-  );
+  const vectorStore = await MemoryVectorStore.fromDocuments(splits, azureEmbedding);
+
+
+
 
   const retriever = vectorStore.asRetriever();
   // console.log(retriever);
 
-  const llm = new ChatOpenAI({
+  const llm = new AzureOpenAI({
     model: "gpt-4o-mini",
-    temperature: 0,
-    openAIApiKey: OPENAI_API_KEY,
-  });
+    azureOpenAIApiKey: OPENAI_API_KEY,
+    azureOpenAIApiInstanceName: OPENAI_DEPLOYMENT_ENDPOINT,
+    azureOpenAIApiDeploymentName: OPENAI_DEPLOYMENT_NAME,
+    azureOpenAIApiVersion: OPENAI_DEPLOYMENT_VERSION,
+    // temperature: 0,
+    // maxTokens: undefined,
+    // timeout: undefined,
+    // maxRetries: 2,
+  })
 
   const systemPrompt =
     "Tu es un assistant de question- réponse " +
