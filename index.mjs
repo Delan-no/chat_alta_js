@@ -8,16 +8,16 @@ import { AzureOpenAI } from "@langchain/openai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-// const OPENAI_API_KEY = "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";
-const OPENAI_API_KEY = "6ea9703016b54b9686e3a744defdd5c3"
-const OPENAI_DEPLOYMENT_VERSION = "2023-07-01-preview"
-const OPENAI_DEPLOYMENT_ENDPOINT = "https://interstisopenaiformation.openai.azure.com/"
-const OPENAI_DEPLOYMENT_NAME = "alta-bot"
+const OPENAI_API_KEY = "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";
+const endpoint = "https://interstisopenaiformation.openai.azure.com/";
+const apiKey = "6ea9703016b54b9686e3a744defdd5c3";
+const apiVersion = "2024-05-01-preview";
+const deployment = "alta-bot"; 
 const azureEmbedding = new AzureOpenAIEmbeddings({
-  azureOpenAIApiKey: OPENAI_API_KEY,
-  azureOpenAIApiInstanceName: OPENAI_DEPLOYMENT_ENDPOINT,
-  azureOpenAIApiEmbeddingsDeploymentName: OPENAI_DEPLOYMENT_NAME,
-  azureOpenAIApiVersion: OPENAI_DEPLOYMENT_VERSION,
+  azureOpenAIApiKey: apiKey,
+  azureOpenAIApiInstanceName: "interstisopenaiformation",
+  azureOpenAIApiEmbeddingsDeploymentName: deployment,
+  azureOpenAIApiVersion: apiVersion,
   maxRetries: 1,
 })
 const urls = [
@@ -70,10 +70,10 @@ const main = async () => {
 
   const llm = new AzureOpenAI({
     model: "gpt-4o-mini",
-    azureOpenAIApiKey: OPENAI_API_KEY,
-    azureOpenAIApiInstanceName: OPENAI_DEPLOYMENT_ENDPOINT,
-    azureOpenAIApiDeploymentName: OPENAI_DEPLOYMENT_NAME,
-    azureOpenAIApiVersion: OPENAI_DEPLOYMENT_VERSION,
+    azureOpenAIApiKey: apiVersion,
+    azureOpenAIApiInstanceName: "interstisopenaiformation",
+    azureOpenAIApiDeploymentName: deployment,
+    azureOpenAIApiVersion: apiVersion,
     // temperature: 0,
     // maxTokens: undefined,
     // timeout: undefined,
